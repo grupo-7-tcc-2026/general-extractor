@@ -9,23 +9,30 @@ def get_climate(start_date, end_date, distr_records):
 
     for chunk_start in range(0, len(distr_records), MAX_CHUNK_SIZE):
         chunk_end = min(chunk_start + MAX_CHUNK_SIZE, len(distr_records))
-
-        a = distr_records[chunk_start:chunk_end]
-
-        url = _format_url(
-            start_date, end_date, distr_records[chunk_start:chunk_end]
-        )
-
+        chunk = distr_records[chunk_start:chunk_end]
+        url = _format_url(start_date, end_date, chunk)
         json_data = _request_api(url)
+
+        for i in range(len(chunk)):
+            id_distr, nome_distr, regiao, _, _ = chunk[i]
+            json_data[i]["id_distrito"] = id_distr
+            json_data[i]["nome_distrito"] = nome_distr
+            json_data[i]["região"] = regiao
+
         raw_json_results.extend(json_data)
 
     raw_df = pd.json_normalize(raw_json_results)
-    pass
+    treated_df = raw_df.rename(columns={
+        "hourly.time": "data_hora", "hourly.rain": "chuva_mm"
+    })[[
+        "id_distrito", "nome_distrito", "região", "data_hora", "chuva_mm"
+    ]].explode(["data_hora", "chuva_mm"], ignore_index=True)
+    return treated_df
 
-def _format_url(start_date, end_date, coordinate_pairs):
+def _format_url(start_date, end_date, distr_records):
     lats = []
     longs = []
-    for lat, long in coordinate_pairs:
+    for _, _, _, lat, long in distr_records:
         lats.append(str(lat))
         longs.append(str(long))
 
