@@ -1,12 +1,9 @@
-from io import BytesIO
-from modules.io.Boto3Cursor import Boto3Cursor
-import geopandas as gpd
+from modules.custom_io.Boto3Cursor import Boto3Cursor
 
 FILE_KEY = "geoportal_distrito_municipal_v2.geojson"
 
 def get_district_records(s3_cursor: Boto3Cursor):
-    found_bytes = s3_cursor.ler(FILE_KEY)
-    df_dist_raw = gpd.read_file(BytesIO(found_bytes)).to_crs(epsg=4326)
+    df_dist_raw = s3_cursor.ler_gdf(FILE_KEY).to_crs(epsg=4326)
     return _treat(df_dist_raw)
 
 def _treat(df_dist_raw):
