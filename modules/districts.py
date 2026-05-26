@@ -12,5 +12,4 @@ def _treat(df_dist_raw):
     })[["id", "nome", "região", "geometry"]].copy()
     df_dist_treated["lat"] = df_dist_treated.centroid.x
     df_dist_treated["long"] = df_dist_treated.centroid.y
-    df_dist_treated.drop(columns="geometry", inplace=True)
     return df_dist_treated, df_dist_treated.apply(lambda x: tuple(x), axis=1).to_list()
