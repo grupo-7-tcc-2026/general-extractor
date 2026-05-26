@@ -4,6 +4,7 @@ from modules.custom_io.Boto3Cursor import Boto3Cursor
 FILE_KEY = "geoportal_sac_remocao_entulho.geojson"
 
 def extrair(s3_cursor: Boto3Cursor, distr_df: pd.DataFrame):
+    print("\tEtapa geosampa-entulho")
     df_entulho_raw = s3_cursor.ler_gdf(FILE_KEY)
 
     df_entulho = df_entulho_raw.drop(columns="id").rename(columns={
@@ -14,4 +15,6 @@ def extrair(s3_cursor: Boto3Cursor, distr_df: pd.DataFrame):
     juncao = df_entulho.merge(distr_df, how="cross", suffixes=("", "_distrito"))
     juncao = juncao[juncao.apply(lambda x: x["geometry_distrito"].contains(x["geometry"]), axis=1)]
 
-    return juncao.rename(columns={"nome": "nome_distrito"}).drop(columns=["geometry_distrito", "lat", "long"])
+    df_entulho_trusted = juncao.rename(columns={"nome": "nome_distrito"}).drop(columns=["geometry_distrito", "lat", "long"])
+    print("\tEtapa conluída!\n")
+    return df_entulho_trusted

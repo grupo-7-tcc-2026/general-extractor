@@ -11,11 +11,12 @@ if __name__ == "__main__":
     s3_cursor = Boto3Cursor()
     trusted_dfs ={}
 
-    print("Extrator de Dados V. 2.4.0")
+    print("Extrator de Dados V. 2.4.1\n")
 
-    print("\tCarregando distritos...")
+    print("\tEtapa distritos...")
     distr_df, distr_records = districts.get_district_records(s3_cursor)
     trusted_dfs["trusted_district"] = distr_df.drop(columns="geometry")
+    print("\tEtapa concluída\n")
 
     if toggle_open_meteo_stage:
         trusted_dfs["trusted_climate"] = open_meteo.extract(distr_records)
