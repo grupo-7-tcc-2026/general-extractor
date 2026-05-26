@@ -4,10 +4,10 @@ import boto3
 import pandas as pd
 
 
-def persist_results(distr_df, climate_df):
+def persist_results(**kwargs):
     bucket_name, cursor = _load_cursor()
-    _persist_df(cursor, bucket_name, "trusted_district.csv", distr_df)
-    _persist_df(cursor, bucket_name, "trusted_climate.csv", climate_df)
+    for key, df in kwargs.items():
+        _persist_df(cursor, bucket_name, f"{key}.csv", df)
 
 def _load_cursor():
     bucket_name = os.getenv("S3_TARGET_BUCKET")

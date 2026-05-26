@@ -1,21 +1,21 @@
-from modules import dates, districts, open_meteo, rain_intervals, persist_results
+import os
+from modules import open_meteo, persist_results, districts
 from dotenv import load_dotenv
 
 if __name__ == "__main__":
     load_dotenv()
+    toggle_open_meteo_stage = os.getenv("OPEN_METEO_STAGE") == "1"
+    trusted_dfs ={}
 
-    print("Extrator de Dados OpenMeteo")
+    print("Extrator de Dados V. 2.2")
 
-    print("\tOrganizando datas do .env...")
-    start_date, end_date = dates.get_dates()
     print("\tCarregando distritos...")
     distr_df, distr_records = districts.get_district_records()
+    trusted_dfs["trusted_district"] = distr_df
 
-    print("\tEnviando requisições ao OpenMeteo...")
-    raw_climate_df = open_meteo.get_climate(start_date, end_date,distr_records)
-    print("\tOrganizando os dados de clima obtidos...")
-    trusted_climate_df = rain_intervals.generate_rain_intervals(raw_climate_df)
+    if toggle_open_meteo_stage:
+        trusted_dfs["trusted_climate"] = open_meteo.extract(distr_records)
 
     print("\tGravando resultados...")
-    persist_results.persist_results(distr_df, trusted_climate_df)
+    persist_results.persist_results(**trusted_dfs)
     print("Concluído!")
