@@ -1,12 +1,12 @@
 from dotenv import load_dotenv
 from custom_io.IOController import IOController
-# from stages import TrashStage
-
 from stages import *
 
 stages = [
-    DistrictStage,
-    TrashStage,
+    # DistrictStage,
+    # TrashStage,
+    # ClimateStage,
+    FinalStageX
 ]
 
 if __name__ == "__main__":
