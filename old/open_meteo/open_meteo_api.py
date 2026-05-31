@@ -32,10 +32,10 @@ def get_climate(start_date, end_date, distr_records):
 
     raw_df = pd.json_normalize(raw_json_results)
     treated_df = raw_df.rename(columns={
-        "hourly.time": "data_hora", "hourly.rain": "chuva_mm"
+        "hourly.time": "data_hora", "hourly.rain": "mm_chuva"
     })[[
-        "id_distrito", "nome_distrito", "região", "data_hora", "chuva_mm"
-    ]].explode(["data_hora", "chuva_mm"], ignore_index=True)
+        "id_distrito", "nome_distrito", "região", "data_hora", "mm_chuva"
+    ]].explode(["data_hora", "mm_chuva"], ignore_index=True)
     return treated_df
 
 def _format_url(start_date, end_date, distr_records):

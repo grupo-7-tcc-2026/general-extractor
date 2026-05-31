@@ -53,3 +53,10 @@ class EnumEntities(Enum):
     TREATED_DRAINAGE = Entity(
         "trusted_drainage.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED
     )
+    TREATED_CLIMATE = Entity(
+        "trusted_climate.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED
+    )
+
+    FINAL_TABLE_X = Entity(
+        "tabela_final_X", EnumDataFormats.PANDAS, EnumBuckets.TREATED
+    )

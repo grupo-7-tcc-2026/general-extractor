@@ -8,7 +8,9 @@ stages = [
     DistrictStage,
     TrashStage,
     FloodingStage,
-    DrainageStage
+    DrainageStage,
+    ClimateStage,
+    FinalStageX
 ]
 
 if __name__ == "__main__":

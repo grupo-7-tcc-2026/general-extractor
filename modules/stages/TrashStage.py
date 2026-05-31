@@ -14,7 +14,7 @@ class TrashStage(IStage):
         df_entulho = df_entulho_raw.drop(columns="id").rename(columns={
             "cd_identificador": "id", "tx_situacao_solicitacao": "status",
             "dc_tema": "tema", "dc_servico": "servico", "dc_assunto": "assunto", "dt_parecer": "data"
-        })[["id", "data", "status", "tema", "servico", "assunto", "geometry"]].copy()
+        })[["id", "data", "status", "tema", "servico", "assunto", "geometry"]].to_crs(epsg=4326).copy()
         df_entulho["data"] = df_entulho["data"].dt.strftime("%Y-%m-%dT%H:%M:%S")
 
         juncao = df_entulho.merge(distr_df, how="cross", suffixes=("", "_distrito"))

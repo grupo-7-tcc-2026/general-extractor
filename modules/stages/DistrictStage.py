@@ -9,6 +9,7 @@ class DistrictStage(IStage):
 
     def _model_data(self) -> pd.DataFrame:
         df_dist_raw = self.data_heap[EnumEntities.RAW_DISTRICTS.value.key]
+        df_dist_raw = df_dist_raw.to_crs(epsg=4326)
 
         df_dist_treated = df_dist_raw.drop(columns="id").rename(columns={
             "cd_identificador_distrito": "id", "nm_distrito_municipal": "nome", "nm_regiao_05": "região"
