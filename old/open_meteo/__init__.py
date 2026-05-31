@@ -1,5 +1,5 @@
 import pandas as pd
-from modules.open_meteo import dates, open_meteo_api, rain_intervals
+from old.open_meteo import dates, open_meteo_api, rain_intervals
 
 def extract(distr_records) -> pd.DataFrame:
     print("\tEtapa OpenMeteo")
