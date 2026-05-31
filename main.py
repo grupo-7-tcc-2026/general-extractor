@@ -1,29 +1,22 @@
-import os
-from modules import open_meteo, districts, geosampa_entulho
-from modules.custom_io import persist_results
-from modules.custom_io.Boto3Cursor import Boto3Cursor
 from dotenv import load_dotenv
+from custom_io.IOController import IOController
+from stages import *
+
+stages = [
+    DistrictStage,
+]
 
 if __name__ == "__main__":
     load_dotenv()
-    toggle_open_meteo_stage = os.getenv("OPEN_METEO_STAGE") == "1"
-    toggle_litter_stage = os.getenv("LITTER_STAGE") == "1"
-    s3_cursor = Boto3Cursor()
-    trusted_dfs ={}
+    io_controller = IOController()
+    data_heap, entities_to_reuse = io_controller.load_data(stages)
 
-    print("Extrator de Dados V. 2.4.1\n")
+    print("Extrator de Dados V. 3.0\n")
+    for stage_class in stages:
+        stage = stage_class(data_heap)
+        generated_entity, df_content = stage.model_data()
 
-    print("\tEtapa distritos...")
-    distr_df, distr_records = districts.get_district_records(s3_cursor)
-    trusted_dfs["trusted_district"] = distr_df.drop(columns="geometry")
-    print("\tEtapa concluída\n")
+        io_controller.persist_dataframe(generated_entity, df_content)
 
-    if toggle_open_meteo_stage:
-        trusted_dfs["trusted_climate"] = open_meteo.extract(distr_records)
-
-    if toggle_litter_stage:
-        trusted_dfs["trusted_litter"] = geosampa_entulho.extrair(s3_cursor, distr_df)
-
-    print("\tGravando resultados...")
-    persist_results.persist_results(s3_cursor, **trusted_dfs)
-    print("Concluído!")
+        if stage.generated_entity in entities_to_reuse:
+            data_heap[stage.generated_entity.key] = df_content
