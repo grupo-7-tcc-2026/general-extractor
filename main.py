@@ -5,7 +5,8 @@ from stages import *
 stages = [
     # DistrictStage,
     # TrashStage,
-    ClimateStage
+    # ClimateStage,
+    FinalStageX
 ]
 
 if __name__ == "__main__":
