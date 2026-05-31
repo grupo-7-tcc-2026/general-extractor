@@ -16,6 +16,6 @@ class FinalStageX(IStage):
 
         amostra_distr = distr_df[["nome", "região"]].rename(columns={"nome": "distrito"})
         amostra_entulho = entulho_df["nome_distrito"].value_counts().rename("qtd_lixo").rename_axis("distrito").reset_index()
-        amostra_clima = climate_df.rename(columns={"nome_distrito": "distrito"})[["distrito", "data_hora", "chuva_mm"]]
+        amostra_clima = climate_df.rename(columns={"nome_distrito": "distrito"})[["distrito", "data_hora", "mm_chuva"]]
 
         return amostra_distr.merge(amostra_entulho).merge(amostra_clima)
