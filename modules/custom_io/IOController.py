@@ -13,17 +13,21 @@ class IOController:
         self.s3_cursor = Boto3Cursor()
 
     def load_data(self, stages: list[IStage]) -> tuple[dict[str, pd.DataFrame|dict], set[Entity]]:
+        print("Iniciando leitura de entidades...")
         entities_to_load, entities_to_reuse = self._reuse_or_load(stages)
 
         data_heap: dict[str, pd.DataFrame|dict] = {}
-        for entity in entities_to_load:
+        for i, entity in enumerate(entities_to_load):
+            print(f"\t[{i+1}/{len(entities_to_load)}] {entity.key}...")
             entity.bucket.load_name()
             data_heap[entity.key] = self._load_entity_data(entity)
 
+        print("Feito!\n")
         return data_heap, entities_to_reuse
 
     def persist_dataframe(self, entity: Entity, df: pd.DataFrame) -> None:
-        self.s3_cursor.gravar(entity, df)
+        bytes_content = BytesParser.parse_write_content(entity, df)
+        self.s3_cursor.gravar(entity, bytes_content)
 
     def _reuse_or_load(self, stages: list[IStage]) -> tuple[set[Entity], set[Entity]]:
         entities_to_reuse: set[Entity] = set()
@@ -40,5 +44,5 @@ class IOController:
 
     def _load_entity_data(self, entity: Entity) -> pd.DataFrame|dict:
         bytes_content = self.s3_cursor.ler(entity)
-        parsed_content = BytesParser.parse_content(entity, bytes_content)
+        parsed_content = BytesParser.parse_read_content(entity, bytes_content)
         return parsed_content

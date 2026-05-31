@@ -1,6 +1,4 @@
-from io import StringIO
 import boto3
-import pandas as pd
 from botocore.client import BaseClient
 from entities import Entity
 
@@ -21,9 +19,7 @@ class Boto3Cursor:
             raise FileNotFoundError(f"Não foi possível encontrar \'{entity.key}\' no S3...")
         return res["Body"].read()
 
-    def gravar(self, entity: Entity, df: pd.DataFrame):
-        csv_buffer = StringIO()
-        df.to_csv(csv_buffer, index=False, sep="|")
+    def gravar(self, entity: Entity, byte_contents: bytes) -> None:
         self.cursor.put_object(
-            Bucket=entity.bucket.bucket_name, Key=f"{entity.key}.csv", Body=csv_buffer.getvalue()
+            Bucket=entity.bucket.bucket_name, Key=entity.key, Body=byte_contents
         )

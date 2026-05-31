@@ -31,7 +31,13 @@ class EnumEntities(Enum):
     RAW_DISTRICTS = Entity(
         "geoportal_distrito_municipal_v2.geojson", EnumDataFormats.GEOPANDAS, EnumBuckets.RAW
     )
+    RAW_TRASH = Entity(
+        "geoportal_sac_remocao_entulho.geojson", EnumDataFormats.GEOPANDAS, EnumBuckets.RAW
+    )
+
     TREATED_DISTRICTS = Entity(
-        "trusted_district", EnumDataFormats.GEOPANDAS, EnumBuckets.TREATED,
-        params={"sep": "|"}
+        "trusted_district.geojson", EnumDataFormats.GEOPANDAS, EnumBuckets.TREATED
+    )
+    TREATED_TRASH = Entity(
+        "trusted_trash.geojson", EnumDataFormats.GEOPANDAS, EnumBuckets.TREATED
     )
