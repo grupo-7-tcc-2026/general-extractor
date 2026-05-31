@@ -13,7 +13,7 @@ class ClimateStage(IStage):
     BASE_URL = "https://archive-api.open-meteo.com/v1/archive?latitude={}&longitude={}&start_date={}&end_date={}&hourly=rain"
 
     required_entities = {EnumEntities.TREATED_DISTRICTS.value}
-    generated_entity = EnumEntities.TREATED_TRASH.value
+    generated_entity = EnumEntities.TREATED_CLIMATE.value
 
     def _model_data(self) -> pd.DataFrame:
         distr_df = self.data_heap[EnumEntities.TREATED_DISTRICTS.value.key]
@@ -22,13 +22,14 @@ class ClimateStage(IStage):
         raw_climate_df = self.get_climate(start_date, end_date, distr_df)
 
         non_zero_records = raw_climate_df[raw_climate_df["chuva_mm"] != 0]
-        non_zero_records["group_id"] = non_zero_records['chuva_mm'].ne(
-            non_zero_records['chuva_mm'].shift()
-        ).cumsum()
-        agg_chuva = non_zero_records.groupby(["nome_distrito", "group_id"]).agg(
-            dt_hr_inicio=('data_hora', 'first'), dt_hr_fim=('data_hora', 'last'), chuva_mm=('chuva_mm', 'first')
-        ).reset_index().drop(columns="group_id")
-        return agg_chuva[agg_chuva["dt_hr_inicio"] != agg_chuva["dt_hr_fim"]]
+        return non_zero_records
+        # non_zero_records["group_id"] = non_zero_records['chuva_mm'].ne(
+        #     non_zero_records['chuva_mm'].shift()
+        # ).cumsum()
+        # agg_chuva = non_zero_records.groupby(["nome_distrito", "group_id"]).agg(
+        #     dt_hr_inicio=('data_hora', 'first'), dt_hr_fim=('data_hora', 'last'), chuva_mm=('chuva_mm', 'first')
+        # ).reset_index().drop(columns="group_id")
+        # return agg_chuva[agg_chuva["dt_hr_inicio"] != agg_chuva["dt_hr_fim"]]
 
     def _load_dates(self):
         start_date = os.getenv("START_DATE")
