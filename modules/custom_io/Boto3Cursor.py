@@ -1,6 +1,6 @@
 import boto3
 from botocore.client import BaseClient
-from entities import Entity
+from modules.entities import Entity
 
 
 class Boto3Cursor:

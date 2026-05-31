@@ -1,6 +1,6 @@
 import pandas as pd
-from entities import EnumEntities
-from stages.IStage import IStage
+from modules.entities import EnumEntities
+from modules.stages.IStage import IStage
 
 class TrashStage(IStage):
 

@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from custom_io.bucket import Bucket, EnumBuckets
+from modules.custom_io.bucket import Bucket, EnumBuckets
 
 class EnumDataFormats(Enum):
     PANDAS = auto()
@@ -34,10 +34,16 @@ class EnumEntities(Enum):
     RAW_TRASH = Entity(
         "geoportal_sac_remocao_entulho.geojson", EnumDataFormats.GEOPANDAS, EnumBuckets.RAW
     )
+    RAW_CGE_FLOODING = Entity(
+        "alagamentos_cge_raw_to_trusted.csv", EnumDataFormats.PANDAS, EnumBuckets.RAW
+    )
 
     TREATED_DISTRICTS = Entity(
         "trusted_district.geojson", EnumDataFormats.GEOPANDAS, EnumBuckets.TREATED
     )
     TREATED_TRASH = Entity(
         "trusted_trash.geojson", EnumDataFormats.GEOPANDAS, EnumBuckets.TREATED
+    )
+    TREATED_CGE_FLOODING = Entity(
+        "trusted_cge_flooding.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED
     )

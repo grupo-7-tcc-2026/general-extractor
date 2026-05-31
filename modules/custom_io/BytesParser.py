@@ -5,7 +5,7 @@ from io import BytesIO, StringIO
 
 from shapely.geometry import geo
 
-from entities import Entity, EnumDataFormats
+from modules.entities import Entity, EnumDataFormats
 
 class BytesParser(ABC):
 

@@ -1,8 +1,8 @@
 import pandas as pd
-from custom_io.Boto3Cursor import Boto3Cursor
-from custom_io.BytesParser import BytesParser
-from entities import Entity
-from stages.IStage import IStage
+from modules.custom_io.Boto3Cursor import Boto3Cursor
+from modules.custom_io.BytesParser import BytesParser
+from modules.entities import Entity
+from modules.stages.IStage import IStage
 
 
 class IOController:

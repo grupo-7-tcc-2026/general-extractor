@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import pandas as pd
-from entities import Entity
+from modules.entities import Entity
 
 
 class IStage(ABC):
