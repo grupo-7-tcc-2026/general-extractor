@@ -58,5 +58,5 @@ class EnumEntities(Enum):
     )
 
     FINAL_TABLE_X = Entity(
-        "tabela_final_X", EnumDataFormats.PANDAS, EnumBuckets.TREATED
+        "tabela_final_X.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED
     )
