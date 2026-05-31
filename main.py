@@ -7,7 +7,8 @@ from modules.stages import *
 stages = [
     DistrictStage,
     TrashStage,
-    FloodingStage
+    FloodingStage,
+    DrainageStage
 ]
 
 if __name__ == "__main__":

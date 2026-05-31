@@ -37,6 +37,9 @@ class EnumEntities(Enum):
     RAW_CGE_FLOODING = Entity(
         "alagamentos_cge_raw_to_trusted.csv", EnumDataFormats.PANDAS, EnumBuckets.RAW
     )
+    RAW_DRAINAGE = Entity(
+        "drenagem_por_distrito.csv", EnumDataFormats.PANDAS, EnumBuckets.RAW, params={"sep": ";"}
+    )
 
     TREATED_DISTRICTS = Entity(
         "trusted_district.geojson", EnumDataFormats.GEOPANDAS, EnumBuckets.TREATED
@@ -46,4 +49,7 @@ class EnumEntities(Enum):
     )
     TREATED_CGE_FLOODING = Entity(
         "trusted_cge_flooding.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED
+    )
+    TREATED_DRAINAGE = Entity(
+        "trusted_drainage.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED
     )
