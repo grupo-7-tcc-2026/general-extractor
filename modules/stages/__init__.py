@@ -3,4 +3,4 @@ from .TrashStage import TrashStage
 from .FloodingStage import FloodingStage
 from .DrainageStage import DrainageStage
 from .ClimateStage import ClimateStage
-from .FinalStageX import FinalStageX
+from .FinalStage import FinalStage

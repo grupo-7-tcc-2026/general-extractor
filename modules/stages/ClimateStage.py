@@ -1,5 +1,4 @@
 import os
-import pandas as pd
 import requests
 from requests import get
 from tqdm import tqdm
@@ -10,50 +9,27 @@ from modules.stages.IStage import IStage
 
 class ClimateStage(IStage):
 
-    BASE_URL = "https://archive-api.open-meteo.com/v1/archive?latitude={}&longitude={}&start_date={}&end_date={}&hourly=rain"
-
+    BASE_URL = (
+        "https://archive-api.open-meteo.com/v1/archive"
+        "?latitude={}&longitude={}&start_date={}&end_date={}"
+        "&hourly=rain,et0_fao_evapotranspiration,soil_temperature_0_to_7cm"
+    )
     required_entities = {EnumEntities.TREATED_DISTRICTS.value}
     generated_entity = EnumEntities.TREATED_CLIMATE.value
 
     def _model_data(self) -> pd.DataFrame:
         distr_df = self.data_heap[EnumEntities.TREATED_DISTRICTS.value.key]
 
-        start_date, end_date = self._load_dates()
-        raw_climate_df = self.get_climate(start_date, end_date, distr_df)
+        raw_climate_df = self.get_climate(self.start_date, self.end_date, distr_df)
 
         non_zero_records = raw_climate_df[raw_climate_df["mm_chuva"] != 0]
         return non_zero_records
-        # non_zero_records["group_id"] = non_zero_records['mm_chuva'].ne(
-        #     non_zero_records['mm_chuva'].shift()
-        # ).cumsum()
-        # agg_chuva = non_zero_records.groupby(["nome_distrito", "group_id"]).agg(
-        #     dt_hr_inicio=('data_hora', 'first'), dt_hr_fim=('data_hora', 'last'), mm_chuva=('mm_chuva', 'first')
-        # ).reset_index().drop(columns="group_id")
-        # return agg_chuva[agg_chuva["dt_hr_inicio"] != agg_chuva["dt_hr_fim"]]
-
-    def _load_dates(self):
-        start_date = os.getenv("START_DATE")
-        end_date = os.getenv("END_DATE")
-        if start_date is None or end_date is None:
-            raise EnvironmentError("Defina os parâmetros temporais no .env")
-
-        DATE_FORMAT = "%d/%m/%Y"
-        try:
-            start_date = datetime.strptime(start_date, DATE_FORMAT)
-            end_date = datetime.strptime(end_date, DATE_FORMAT)
-        except ValueError:
-            raise ValueError(
-                f"O formato de data de \'{start_date}\' ou \'{end_date}\' não está de acordo com o padrão definido "
-                f"(\'{DATE_FORMAT}\')"
-            )
-
-        return start_date, end_date
 
     def get_climate(self, start_date, end_date, distr_df):
         MAX_CHUNK_SIZE = 10
         raw_json_results = []
 
-        print("\t\t\tTrabalando chunks...")
+        print("\t\t\tTrabalhando chunks...")
         for chunk_start in tqdm(range(0, len(distr_df), MAX_CHUNK_SIZE)):
             chunk_end = min(chunk_start + MAX_CHUNK_SIZE, len(distr_df))
             chunk = distr_df.loc[chunk_start:chunk_end]
@@ -63,14 +39,17 @@ class ClimateStage(IStage):
                 continue
 
             for i, idx in enumerate(chunk.index):
-                json_data[i]["nome_distrito"] = chunk.loc[idx, "nome"]
+                json_data[i]["distrito"] = chunk.loc[idx, "nome"]
 
             raw_json_results.extend(json_data)
 
         raw_df = pd.json_normalize(raw_json_results)
         treated_df = raw_df.rename(columns={
-            "hourly.time": "data_hora", "hourly.rain": "mm_chuva"
-        })[["nome_distrito", "data_hora", "mm_chuva"]].explode(["data_hora", "mm_chuva"], ignore_index=True)
+            "hourly.time": "data_hora", "hourly.rain": "mm_chuva", "hourly.et0_fao_evapotranspiration": "mm_evaporados",
+            "hourly.soil_temperature_0_to_7cm": "c_temperatura_solo"
+        })[["distrito", "data_hora", "mm_chuva", "mm_evaporados", "c_temperatura_solo"]].explode([
+            "data_hora", "mm_chuva", "mm_evaporados", "c_temperatura_solo"
+        ], ignore_index=True)
         return treated_df
 
     def _format_url(self, start_date, end_date, distr_df):

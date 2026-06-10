@@ -38,7 +38,7 @@ class EnumEntities(Enum):
         "alagamentos_cge_raw_to_trusted.csv", EnumDataFormats.PANDAS, EnumBuckets.RAW
     )
     RAW_DRAINAGE = Entity(
-        "drenagem_por_distrito.csv", EnumDataFormats.PANDAS, EnumBuckets.RAW, params={"sep": ";"}
+        "drenagem_por_distrito.csv", EnumDataFormats.PANDAS, EnumBuckets.RAW, params={"sep": ","}
     )
 
     TREATED_DISTRICTS = Entity(
@@ -57,6 +57,6 @@ class EnumEntities(Enum):
         "trusted_climate.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED, params={"sep": "|"}
     )
 
-    FINAL_TABLE_X = Entity(
-        "tabela_final_X.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED
+    FINAL_TABLE = Entity(
+        "tabela_final.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED
     )
