@@ -1,6 +1,6 @@
 import pandas as pd
-from entities import EnumEntities
-from stages.IStage import IStage
+from modules.entities import EnumEntities
+from modules.stages.IStage import IStage
 
 class TrashStage(IStage):
 
@@ -22,7 +22,7 @@ class TrashStage(IStage):
             juncao.apply(lambda x: x["geometry_distrito"].contains(x["geometry"]), axis=1)
         ]
 
-        df_entulho_trusted = juncao.rename(columns={"nome": "nome_distrito"}).drop(
+        df_entulho_trusted = juncao.rename(columns={"nome": "distrito"}).drop(
             columns=["geometry_distrito", "lat", "long"]
         )
         return df_entulho_trusted

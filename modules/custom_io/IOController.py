@@ -1,8 +1,11 @@
+import os
+from datetime import datetime
+
 import pandas as pd
-from custom_io.Boto3Cursor import Boto3Cursor
-from custom_io.BytesParser import BytesParser
-from entities import Entity
-from stages.IStage import IStage
+from modules.custom_io.Boto3Cursor import Boto3Cursor
+from modules.custom_io.BytesParser import BytesParser
+from modules.entities import Entity
+from modules.stages.IStage import IStage
 
 
 class IOController:
@@ -28,6 +31,23 @@ class IOController:
     def persist_dataframe(self, entity: Entity, df: pd.DataFrame) -> None:
         bytes_content = BytesParser.parse_write_content(entity, df)
         self.s3_cursor.gravar(entity, bytes_content)
+
+    def load_dates(self):
+        start_date = os.getenv("START_DATE")
+        end_date = os.getenv("END_DATE")
+        if start_date is None or end_date is None:
+            raise EnvironmentError("Defina os parâmetros temporais no .env")
+
+        DATE_FORMAT = "%d/%m/%Y"
+        try:
+            start_date = datetime.strptime(start_date, DATE_FORMAT)
+            end_date = datetime.strptime(end_date, DATE_FORMAT)
+        except ValueError:
+            raise ValueError(
+                f"O formato de data de \'{start_date}\' ou \'{end_date}\' não está de acordo com o padrão definido "
+                f"(\'{DATE_FORMAT}\')"
+            )
+        return start_date, end_date
 
     def _reuse_or_load(self, stages: list[IStage]) -> tuple[set[Entity], set[Entity]]:
         entities_to_reuse: set[Entity] = set()

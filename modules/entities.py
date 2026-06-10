@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from custom_io.bucket import Bucket, EnumBuckets
+from modules.custom_io.bucket import Bucket, EnumBuckets
 
 class EnumDataFormats(Enum):
     PANDAS = auto()
@@ -34,6 +34,12 @@ class EnumEntities(Enum):
     RAW_TRASH = Entity(
         "geoportal_sac_remocao_entulho.geojson", EnumDataFormats.GEOPANDAS, EnumBuckets.RAW
     )
+    RAW_CGE_FLOODING = Entity(
+        "alagamentos_cge_raw_to_trusted.csv", EnumDataFormats.PANDAS, EnumBuckets.RAW
+    )
+    RAW_DRAINAGE = Entity(
+        "drenagem_por_distrito.csv", EnumDataFormats.PANDAS, EnumBuckets.RAW, params={"sep": ","}
+    )
 
     TREATED_DISTRICTS = Entity(
         "trusted_district.geojson", EnumDataFormats.GEOPANDAS, EnumBuckets.TREATED
@@ -41,10 +47,16 @@ class EnumEntities(Enum):
     TREATED_TRASH = Entity(
         "trusted_trash.geojson", EnumDataFormats.GEOPANDAS, EnumBuckets.TREATED
     )
+    TREATED_CGE_FLOODING = Entity(
+        "trusted_cge_flooding.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED
+    )
+    TREATED_DRAINAGE = Entity(
+        "trusted_drainage.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED
+    )
     TREATED_CLIMATE = Entity(
-        "trusted_climate.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED
+        "trusted_climate.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED, params={"sep": "|"}
     )
 
-    FINAL_TABLE_X = Entity(
-        "tabela_final_X", EnumDataFormats.PANDAS, EnumBuckets.TREATED
+    FINAL_TABLE = Entity(
+        "tabela_final.csv", EnumDataFormats.PANDAS, EnumBuckets.TREATED
     )
