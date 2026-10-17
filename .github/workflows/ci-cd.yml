@@ -53,7 +53,7 @@ jobs:
             main.py
             requirements.txt
             modules/**
-          target: /home/ubuntu/general-extractor
+          target: /opt/general-extractor
 
       - name: Atualizar dependências
         uses: appleboy/ssh-action@v1.0.3
@@ -62,7 +62,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/general-extractor
+            cd /opt/general-extractor
 
             if [ ! -d ".venv" ]; then
               python3 -m venv .venv
